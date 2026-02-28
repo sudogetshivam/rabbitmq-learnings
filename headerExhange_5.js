@@ -3,14 +3,14 @@ const ampq =  require('amqplib')
 const sendNotification = async(headers,message)=>{
 try {
     const connection = await ampq.connect("amqp://localhost")
-    const channel = connection.createChannel()
+    const channel = await connection.createChannel()
 
-    const exchange = "headers_exchange"
+    const exchange = "header_exchange"
     const exchangeType = "headers"
 
-    (await channel).assertExchange(exchange,exchangeType, {durable:true})
+    await channel.assertExchange(exchange,exchangeType, {durable:true})
 
-    (await channel).publish(exchange,"",Buffer.from(message),{
+    await channel.publish(exchange,"",Buffer.from(message),{
         presistent: true,
         headers
     })
